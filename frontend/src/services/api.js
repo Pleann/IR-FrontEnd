@@ -28,3 +28,8 @@ export async function login(data) {
 
   return res.json();
 }
+
+export async function searchRecipes(query) {
+  const res = await fetch(`${API_URL}/search?q=${encodeURIComponent(query)}`);
+  return res.json();
+}
