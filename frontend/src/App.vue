@@ -1,15 +1,12 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { fetchTest } from './services/api';
+import Navbar from "./components/Navbar.vue";
 
 const message = ref('');
 
-onMounted(async () => {
-  const data = await fetchTest();
-  message.value = data.message;
-});
 </script>
 
 <template>
-  <h1>{{ message }}</h1>
+  <Navbar />
+  <router-view />
 </template>
