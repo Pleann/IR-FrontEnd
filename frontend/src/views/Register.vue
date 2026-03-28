@@ -10,6 +10,7 @@ const email = ref("");
 const password = ref("");
 const message = ref("");
 
+
 async function handleRegister() {
   const res = await register({
     username: username.value,

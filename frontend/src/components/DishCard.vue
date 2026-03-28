@@ -1,32 +1,32 @@
 <script setup>
 defineProps({
   title: String,
+  image: String,
+  description: String,
+  category: String
 });
+
+const emit = defineEmits(["select"])
+
 </script>
 
 <template>
-  <div class="card">
-    <img src="https://via.placeholder.com/150" />
-    <h4>{{ title }}</h4>
+    <div
+    @click="emit('select')"
+    class="bg-white rounded-xl shadow hover:shadow-lg transition cursor-pointer"
+    >
+  <div class="bg-white rounded-xl shadow hover:shadow-lg transition">
+    <img
+      :src="image"
+      class="w-full h-40 object-cover"
+    />
+    <div class="p-3">
+      <h3 class="font-semibold text-lg">{{ title }}</h3>
+      <p class="text-sm text-gray-500">{{ category }}</p>
+      <p class="text-sm text-gray-600 line-clamp-2">
+        {{ description }}
+      </p>
+    </div>
   </div>
+</div>
 </template>
-
-<style scoped>
-.card {
-  width: 180px;
-  border-radius: 12px;
-  overflow: hidden;
-  background: white;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-img {
-  width: 100%;
-  height: 120px;
-  object-fit: cover;
-}
-
-h4 {
-  padding: 10px;
-}
-</style>
