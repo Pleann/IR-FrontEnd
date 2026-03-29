@@ -15,6 +15,7 @@ const existingBookmark = ref(null);
 
 async function loadBookmarkState() {
   const bookmarks = await getBookmarks();
+  console.log("getBookmarks response:", bookmarks);
   existingBookmark.value = bookmarks.find(b => b.recipe_id === props.recipe.recipe_id) || null;
   if (existingBookmark.value) {
     selectedFolder.value = existingBookmark.value.folder_id;
@@ -33,7 +34,12 @@ async function saveBookmark() {
     await createBookmark({
       recipe_id: props.recipe.recipe_id,
       folder_id: selectedFolder.value,
-      rating: selectedRating.value
+      rating: selectedRating.value,
+      recipe_name: props.recipe.name,
+      recipe_image: props.recipe.images,
+      recipe_category: props.recipe.category,     
+      recipe_ingredients: props.recipe.ingredient_parts, 
+      recipe_instructions: props.recipe.instructions, 
     });
   }
   showBookmarkPopup.value = false;

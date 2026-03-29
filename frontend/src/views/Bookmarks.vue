@@ -58,13 +58,12 @@ onMounted(loadBookmarks);
 
           <!-- Folder selector -->
           <select
-            :value="b.folder_id"
+            :value="b.folder_id || (folders.length > 0 ? folders[0].folder_id : '')"
             @change="handleFolderChange(b, $event.target.value)"
             class="text-sm border rounded px-2 py-0.5 mt-1"
-          >
-            <option value="">No folder</option>
+            >
             <option v-for="f in folders" :key="f.folder_id" :value="f.folder_id">
-              {{ f.folder_name }}
+                {{ f.folder_name }}
             </option>
           </select>
         </div>

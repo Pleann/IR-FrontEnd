@@ -13,7 +13,7 @@ const error = ref("");
 const selectedFolder = ref(null);
 const folderRecipes = ref([]);
 const loadingRecipes = ref(false);
-const selectedRecipe = ref(null);  // ← for RecipeDetail modal
+const selectedRecipe = ref(null); 
 
 async function loadFolders() {
   folders.value = await getFolders();
@@ -32,21 +32,22 @@ async function openFolder(folder) {
   selectedFolder.value = folder;
   loadingRecipes.value = true;
   const bookmarks = await getFolderBookmarks(folder.folder_id);
-  const results = await Promise.all(bookmarks.map(b => getRecipeById(b.recipe_id)));
-  folderRecipes.value = results
-  .filter(r => !r.detail)
-  .map(r => ({
-    recipe_id: r.RecipeId,
-    name: r.Name,
-    images: r.Images,
-    description: r.Description,
-    category: r.RecipeCategory,
-    ingredients: r.Ingredients,
-    ingredient_parts: r.Ingredients,   
-    instructions: r.Instructions,      
-    total_time: r.TotalTime,
-    rating: r.AggregatedRating,
+  const results = await Promise.all(bookmarks.map(async b => {
+    const recipe = await getRecipeById(b.recipe_id);
+    const inIndex = recipe.Name !== `Recipe #${b.recipe_id}`;
+    return {
+      recipe_id: b.recipe_id,
+      name: b.recipe_name || recipe.Name,
+      images: b.recipe_image || recipe.Images || "",
+      description: inIndex ? recipe.Description : "",
+      category: b.recipe_category || recipe.RecipeCategory || "",
+      ingredient_parts: b.recipe_ingredients || recipe.Ingredients || "",
+      instructions: b.recipe_instructions || recipe.Instructions || "",
+      total_time: inIndex ? recipe.TotalTime : "",
+      rating: b.rating || 0,
+    };
   }));
+  folderRecipes.value = results;
   loadingRecipes.value = false;
 }
 
@@ -102,18 +103,25 @@ onMounted(loadFolders);
       </div>
 
       <!-- Recipe grid using DishCard -->
-      <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-        <DishCard
-          v-for="recipe in folderRecipes"
-          :key="recipe.recipe_id"
-          :title="recipe.name"
-          :image="recipe.images"
-          :description="recipe.description"
-          :category="recipe.category"
-          :recipe="recipe"           
-          @select="selectRecipe(recipe)"
-        />
-      </div>
+    <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <div v-for="recipe in folderRecipes" :key="recipe.recipe_id">
+            <DishCard
+            :title="recipe.name"
+            :image="recipe.images"
+            :description="recipe.description"
+            :category="recipe.category"
+            :recipe="recipe"
+            @select="selectRecipe(recipe)"
+            />
+            <!-- Rating stars below card -->
+            <div class="flex gap-0.5 mt-1 px-1">
+            <span v-for="star in 5" :key="star"
+                :class="star <= (recipe.rating || 0) ? 'text-yellow-400' : 'text-gray-300'"
+                class="text-sm">★</span>
+            <span class="text-xs text-gray-400 ml-1">{{ recipe.rating || 0 }}/5</span>
+            </div>
+        </div>
+        </div>
     </div>
 
     <!-- Folders grid view -->
@@ -136,10 +144,19 @@ onMounted(loadFolders);
         <div v-for="folder in folders" :key="folder.folder_id"
           class="border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition cursor-pointer"
           @click="openFolder(folder)">
-          <img
-            :src="folderPreviews[folder.folder_id] || 'https://placehold.co/400x300?text=Empty+Folder'"
-            class="w-full h-40 object-cover"
-            onerror="this.src='https://placehold.co/400x300?text=Empty+Folder'" />
+          <div class="w-full h-40 bg-gray-100 flex items-center justify-center overflow-hidden">
+            <img
+            v-if="folderPreviews[folder.folder_id]"
+            :src="folderPreviews[folder.folder_id]"
+            class="w-full h-full object-cover"
+            @error="folderPreviews[folder.folder_id] = ''"
+            />
+            <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            stroke-width="1.5" stroke="currentColor" class="w-16 h-16 text-gray-400">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" />
+            </svg>
+            </div>
           <div class="p-3 flex items-center justify-between">
             <div v-if="editingFolder?.folder_id === folder.folder_id"
               class="flex gap-2 flex-1" @click.stop>
