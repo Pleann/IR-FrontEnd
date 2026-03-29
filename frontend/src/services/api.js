@@ -35,6 +35,7 @@ export async function searchRecipes(query) {
 }
 
 function authHeaders() {
+  console.log(localStorage.getItem("token"));
   return {
     "Content-Type": "application/json",
     "Authorization": `Bearer ${localStorage.getItem("token")}`

@@ -30,7 +30,7 @@ function startEdit(folder) {
 }
 
 async function handleRename() {
-  if (!editName.value.trim()) return;
+  if (!editingFolder.value || !editName.value.trim()) return; 
   await renameFolder(editingFolder.value.folder_id, editName.value.trim());
   editingFolder.value = null;
   await loadFolders();
