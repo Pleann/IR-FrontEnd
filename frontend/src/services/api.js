@@ -113,3 +113,37 @@ export async function getRecipeById(recipeId) {
   const res = await fetch(`${API_URL}/recipes/${recipeId}`, { headers: authHeaders() });
   return res.json();
 }
+
+export async function getRecommendations(category = null) {
+  const url = category
+    ? `${API_URL}/recommendations?category=${encodeURIComponent(category)}`
+    : `${API_URL}/recommendations`;
+  const res = await fetch(url, { headers: authHeaders() });
+  return res.json();
+}
+
+export async function getFolderSuggestions(folderId) {
+  const res = await fetch(`${API_URL}/folders/${folderId}/suggestions`, { headers: authHeaders() });
+  return res.json();
+}
+
+export async function getCategories() {
+  const res = await fetch(`${API_URL}/categories`, { headers: authHeaders() });
+  return res.json();
+}
+
+export async function getRecommendationsByCategory(category) {
+  const res = await fetch(
+    `${API_URL}/recommendations?category=${encodeURIComponent(category)}`,
+    { headers: authHeaders() }
+  );
+  return res.json();
+}
+
+export async function getRecipesByCategory(category) {
+  const res = await fetch(
+    `${API_URL}/recommendations?category=${encodeURIComponent(category)}`,
+    { headers: authHeaders() }
+  );
+  return res.json();
+}
