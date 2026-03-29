@@ -3,7 +3,8 @@ defineProps({
   title: String,
   image: String,
   description: String,
-  category: String
+  category: String,
+  recipe: Object,
 });
 
 const emit = defineEmits(["select"])
@@ -12,7 +13,7 @@ const emit = defineEmits(["select"])
 
 <template>
     <div
-    @click="emit('select')"
+    @click="emit('select', recipe)"
     class="bg-white rounded-xl shadow hover:shadow-lg transition cursor-pointer"
     >
   <div class="bg-white rounded-xl shadow hover:shadow-lg transition">

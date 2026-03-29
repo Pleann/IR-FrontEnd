@@ -23,6 +23,7 @@ const correctedQuery = ref(null);
 
 async function loadRecipes() {
   const res = await getRecipes(currentPage.value, perPage);
+  console.log("first recipe from API:", res.data[0]);
   recipes.value = res.data;
   totalPages.value = res.total_pages;
 }
@@ -47,6 +48,8 @@ async function handleSearch(query) {
       description: r.Description,
       category: r.RecipeCategory,
       ingredients: r.Ingredients,
+      ingredient_parts: r.Ingredients,   
+      instructions: r.Instructions,
       total_time: r.TotalTime,
       rating: r.AggregatedRating,
     }));
@@ -71,6 +74,7 @@ watch(searchQuery, (newQuery) => {
 });
 
 function selectRecipe(recipe) {
+  console.log("selecting recipe:", recipe);
   selectedRecipe.value = recipe;
 }
 </script>
@@ -101,6 +105,7 @@ function selectRecipe(recipe) {
         :image="recipe.images"
         :description="recipe.description"
         :category="recipe.category"
+        :recipe="recipe"           
         @select="selectRecipe(recipe)"
       />
     </div>
