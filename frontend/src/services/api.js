@@ -33,3 +33,41 @@ export async function searchRecipes(query) {
   const res = await fetch(`${API_URL}/search?q=${encodeURIComponent(query)}`);
   return res.json();
 }
+
+function authHeaders() {
+  return {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${localStorage.getItem("token")}`
+  };
+}
+
+export async function getFolders() {
+  const res = await fetch(`${API_URL}/folders`, { headers: authHeaders() });
+  return res.json();
+}
+
+export async function createFolder(name) {
+  const res = await fetch(`${API_URL}/folders`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify({ folder_name: name })
+  });
+  return res.json();
+}
+
+export async function renameFolder(folderId, name) {
+  const res = await fetch(`${API_URL}/folders/${folderId}`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify({ folder_name: name })
+  });
+  return res.json();
+}
+
+export async function deleteFolder(folderId) {
+  const res = await fetch(`${API_URL}/folders/${folderId}`, {
+    method: "DELETE",
+    headers: authHeaders()
+  });
+  return res.json();
+}

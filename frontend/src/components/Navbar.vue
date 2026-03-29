@@ -38,7 +38,6 @@ function logout() {
     <div class="space-x-4">
       <router-link to="/">Home</router-link>
       <router-link to="/folders">Folders</router-link>
-      <router-link to="/bookmarks">Bookmarks</router-link>
       <router-link to="/register" class="hover:underline">Register</router-link>
       <button @click="logout" class="bg-red-500 px-3 py-1 rounded hover:bg-red-600">
         Logout
