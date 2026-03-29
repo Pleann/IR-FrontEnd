@@ -35,7 +35,7 @@ export async function searchRecipes(query) {
 }
 
 function authHeaders() {
-  console.log(localStorage.getItem("token"));
+  // console.log(localStorage.getItem("token"));
   return {
     "Content-Type": "application/json",
     "Authorization": `Bearer ${localStorage.getItem("token")}`
@@ -101,5 +101,15 @@ export async function deleteBookmark(bookmarkId) {
     method: "DELETE",
     headers: authHeaders()
   });
+  return res.json();
+}
+
+export async function getFolderBookmarks(folderId) {
+  const res = await fetch(`${API_URL}/folders/${folderId}/bookmarks`, { headers: authHeaders() });
+  return res.json();
+}
+
+export async function getRecipeById(recipeId) {
+  const res = await fetch(`${API_URL}/recipes/${recipeId}`, { headers: authHeaders() });
   return res.json();
 }

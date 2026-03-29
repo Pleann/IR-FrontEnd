@@ -1,6 +1,8 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { getFolders, createBookmark, updateBookmark, deleteBookmark, getBookmarks } from "../services/api";
+
+
 
 const props = defineProps({ recipe: Object });
 const emit = defineEmits(["close"]);
@@ -51,7 +53,7 @@ onMounted(loadBookmarkState);
 </script>
 
 <template>
-  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div class="bg-white max-w-2xl w-full rounded-xl p-6 overflow-y-auto max-h-[90vh]">
 
       <!-- Header row -->
