@@ -72,3 +72,34 @@ export async function deleteFolder(folderId) {
   });
   return res.json();
 }
+
+export async function getBookmarks(sort = "rating") {
+  const res = await fetch(`${API_URL}/bookmarks?sort=${sort}`, { headers: authHeaders() });
+  return res.json();
+}
+
+export async function createBookmark(data) {
+  const res = await fetch(`${API_URL}/bookmarks`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify(data)
+  });
+  return res.json();
+}
+
+export async function updateBookmark(bookmarkId, data) {
+  const res = await fetch(`${API_URL}/bookmarks/${bookmarkId}`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify(data)
+  });
+  return res.json();
+}
+
+export async function deleteBookmark(bookmarkId) {
+  const res = await fetch(`${API_URL}/bookmarks/${bookmarkId}`, {
+    method: "DELETE",
+    headers: authHeaders()
+  });
+  return res.json();
+}

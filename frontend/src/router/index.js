@@ -3,6 +3,7 @@ import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
 import Home from "../views/Home.vue"
 import Folders from "../views/Folders.vue";
+import Bookmarks from "../views/Bookmarks.vue";
 
 const isAuthenticated = () => !!localStorage.getItem("token");
 
@@ -24,6 +25,14 @@ const routes = [
       if (!isAuthenticated()) next("/login");
       else next();
     }
+  },
+  { 
+  path: "/bookmarks", 
+  component: Bookmarks,
+  beforeEnter: (to, from, next) => {
+    if (!isAuthenticated()) next("/login");
+    else next();
+  }
   }
 ];
 
