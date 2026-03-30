@@ -15,33 +15,72 @@ function logout() {
 </script>
 
 <template>
-  <nav class="flex justify-between items-center px-6 py-4 bg-gray-800 text-white">
-    <h2 class="text-xl font-bold">Recipe App</h2>
+  <nav style="background: #2C1810; font-family: 'Georgia', serif;" class="px-8 py-4">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-6">
 
-    <!-- Search bar -->
-    <div class="flex items-center gap-2">
-      <input
-        v-model="query"
-        @keyup.enter="onSearch"
-        type="text"
-        placeholder="Search recipes..."
-        class="px-3 py-1 rounded text-gray-800 w-64"
-      />
-      <button
-        @click="onSearch"
-        class="bg-orange-500 px-3 py-1 rounded hover:bg-orange-600"
-      >
-        Search
-      </button>
-    </div>
+      <!-- Logo -->
+      <router-link to="/" class="flex items-center gap-2 no-underline">
+        <span style="color: #F5A623; font-size: 1.25rem; font-weight: 700; letter-spacing: 5em; letter-spacing: 0.15em">
+          RECIPE
+        </span>
+      </router-link>
 
-    <div class="space-x-4">
-      <router-link to="/">Home</router-link>
-      <router-link to="/folders">Folders</router-link>
-      <router-link to="/register" class="hover:underline">Register</router-link>
-      <button @click="logout" class="bg-red-500 px-3 py-1 rounded hover:bg-red-600">
-        Logout
-      </button>
+      <!-- Search bar -->
+      <div class="flex items-center gap-2 flex-1 max-w-md">
+        <div class="flex-1 flex items-center gap-2 px-3 py-2 rounded-full"
+          style="background: rgba(255,255,255,0.08); border: 1px solid rgba(245,166,35,0.3);">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+            stroke="#F5A623" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+          </svg>
+          <input v-model="query" @keyup.enter="onSearch" type="text"
+            placeholder="Search recipes..."
+            style="background: transparent; color: #F5F0E8; font-size: 0.9rem; outline: none; border: none; width: 100%;"
+            class="placeholder-gray-400" />
+        </div>
+        <button @click="onSearch"
+          style="background: #F5A623; color: #2C1810; font-weight: 600; font-size: 0.85rem; padding: 0.5rem 1.25rem; border-radius: 9999px; border: none; cursor: pointer; transition: background 0.2s;"
+          @mouseover="$event.target.style.background='#E09415'"
+          @mouseleave="$event.target.style.background='#F5A623'">
+          Search
+        </button>
+      </div>
+
+      <!-- Nav links -->
+      <div class="flex items-center gap-6">
+        <router-link to="/"
+          style="color: #F5F0E8; text-decoration: none; font-size: 0.9rem; opacity: 0.85; transition: opacity 0.2s;"
+          @mouseover="$event.target.style.opacity='1'"
+          @mouseleave="$event.target.style.opacity='0.85'">
+          Home
+        </router-link>
+        <router-link to="/folders"
+          style="color: #F5F0E8; text-decoration: none; font-size: 0.9rem; opacity: 0.85; transition: opacity 0.2s;"
+          @mouseover="$event.target.style.opacity='1'"
+          @mouseleave="$event.target.style.opacity='0.85'">
+          Folders
+        </router-link>
+        <router-link to="/bookmarks"
+          style="color: #F5F0E8; text-decoration: none; font-size: 0.9rem; opacity: 0.85; transition: opacity 0.2s;"
+          @mouseover="$event.target.style.opacity='1'"
+          @mouseleave="$event.target.style.opacity='0.85'">
+          Bookmarks
+        </router-link>
+        <router-link to="/register"
+          style="color: #F5F0E8; text-decoration: none; font-size: 0.9rem; opacity: 0.85; transition: opacity 0.2s;"
+          @mouseover="$event.target.style.opacity='1'"
+          @mouseleave="$event.target.style.opacity='0.85'">
+          Register
+        </router-link>
+        <button @click="logout"
+          style="background: transparent; border: 1px solid rgba(245,166,35,0.5); color: #F5A623; font-size: 0.85rem; padding: 0.4rem 1rem; border-radius: 9999px; cursor: pointer; transition: all 0.2s;"
+          @mouseover="e => { e.target.style.background='#F5A623'; e.target.style.color='#2C1810' }"
+          @mouseleave="e => { e.target.style.background='transparent'; e.target.style.color='#F5A623' }">
+          Logout
+        </button>
+      </div>
+
     </div>
   </nav>
 </template>

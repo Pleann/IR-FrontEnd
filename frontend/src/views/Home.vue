@@ -121,122 +121,128 @@ function selectRecipe(recipe) {
 </script>
 
 <template>
-<div class="p-6">
-  <!-- Search mode banner -->
-  <div v-if="isSearching" class="mb-4 flex items-center gap-3 text-gray-600">
-    <span>Showing search results</span>
-    <button @click="handleSearch('')" class="text-sm text-orange-500 hover:underline">
-      Clear search
-    </button>
-  </div>
+<div style="background: #FDF8F2; min-height: 100vh; font-family: 'Georgia', serif;">
 
-  <div v-if="correctedQuery" class="mb-3 text-sm text-gray-500">
-    Showing results for <span class="font-medium text-gray-800">{{ correctedQuery }}</span>
-  </div>
-
-  <!-- SEARCH MODE -->
-  <div v-if="isSearching">
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-      <DishCard
-        v-for="recipe in recipes"
-        :key="recipe.recipe_id"
-        :title="recipe.name"
-        :image="recipe.images"
-        :description="recipe.description"
-        :category="recipe.category"
-        :recipe="recipe"
-        @select="selectRecipe(recipe)"
-      />
-    </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-      <DishCard
-        v-for="recipe in recipes"
-        :key="recipe.recipe_id"
-        :title="recipe.name"
-        :image="recipe.images"
-        :description="recipe.description"
-        :category="recipe.category"
-        :recipe="recipe"
-        @select="selectRecipe(recipe)"
-      />
-    </div>
-  </div>
-
-  <!-- BROWSE MODE -->
-  <div v-else>
-    <!-- Recommendations -->
-    <div v-if="recommendations.has_bookmarks" class="mt-10 space-y-10">
-
-      <div v-if="recommendations.all_folders.length > 0">
-        <h2 class="text-xl font-bold mb-4">Based on your bookmarks</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          <DishCard
-            v-for="recipe in recommendations.all_folders"
-            :key="recipe.recipe_id"
-            :title="recipe.name"
-            :image="recipe.images"
-            :description="recipe.description"
-            :category="recipe.category"
-            :recipe="recipe"
-            @select="selectRecipe(recipe)"
-          />
+    <!-- Search mode -->
+    <div v-if="isSearching">
+      <div style="background: #FDF8F2;" class="px-8 py-4 border-b border-orange-100">
+        <div class="max-w-7xl mx-auto flex items-center gap-4">
+          <span style="color: #8B6347; font-size: 0.9rem;">
+            Search results for <strong style="color: #2C1810;">"{{ correctedQuery || '' }}"</strong>
+          </span>
+          <button @click="handleSearch('')"
+            style="color: #F5A623; font-size: 0.85rem; background: none; border: none; cursor: pointer; text-decoration: underline;">
+            ✕ Clear
+          </button>
         </div>
       </div>
 
-      <div>
-        <div class="flex items-center gap-4 mb-4">
-          <h2 class="text-xl font-bold">
-            {{ selectedCategory || recommendations.top_category || 'Category' }} recipes
+      <div v-if="correctedQuery" class="max-w-7xl mx-auto px-8 pt-3">
+        <p style="color: #8B6347; font-size: 0.85rem;">
+          Showing results for
+          <span style="color: #2C1810; font-weight: 600;">{{ correctedQuery }}</span>
+        </p>
+      </div>
+
+      <div class="max-w-7xl mx-auto px-8 py-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          <DishCard v-for="recipe in recipes" :key="recipe.recipe_id"
+            :title="recipe.name" :image="recipe.images" :description="recipe.description"
+            :category="recipe.category" :recipe="recipe" @select="selectRecipe(recipe)" />
+        </div>
+      </div>
+
+      <!-- Browse grid -->
+      <div class="max-w-7xl mx-auto px-8 py-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          <DishCard v-for="recipe in recipes" :key="recipe.recipe_id"
+            :title="recipe.name" :image="recipe.images" :description="recipe.description"
+            :category="recipe.category" :recipe="recipe" @select="selectRecipe(recipe)" />
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex justify-center items-center gap-3 mt-8">
+          <button @click="currentPage--" :disabled="currentPage === 1"
+            style="padding: 0.5rem 1.25rem; border-radius: 9999px; border: 1px solid #D4956A; color: #8B6347; background: white; cursor: pointer; font-size: 0.9rem; transition: all 0.2s;"
+            :style="currentPage === 1 ? 'opacity:0.4; cursor:not-allowed' : ''"
+            @mouseover="e => currentPage > 1 && (e.target.style.background='#FFF3E8')"
+            @mouseleave="e => e.target.style.background='white'">
+            ← Prev
+          </button>
+          <span style="color: #8B6347; font-size: 0.9rem;">
+            Page {{ currentPage }} of {{ totalPages }}
+          </span>
+          <button @click="currentPage++" :disabled="currentPage === totalPages"
+            style="padding: 0.5rem 1.25rem; border-radius: 9999px; border: 1px solid #D4956A; color: #8B6347; background: white; cursor: pointer; font-size: 0.9rem; transition: all 0.2s;"
+            :style="currentPage === totalPages ? 'opacity:0.4; cursor:not-allowed' : ''"
+            @mouseover="e => currentPage < totalPages && (e.target.style.background='#FFF3E8')"
+            @mouseleave="e => e.target.style.background='white'">
+            Next →
+          </button>
+        </div>
+      </div>
+    </div>
+
+  <!-- Browse mode -->
+    <div v-else>
+      <!-- Recommendations -->
+      <div v-if="recommendations.has_bookmarks" class="max-w-7xl mx-auto px-8 pb-16 space-y-12">
+
+        <!-- Divider -->
+        <div style="border-top: 2px solid #E8D5BF; padding-top: 2rem;">
+          <p style="color: #8B6347; font-size: 2.5rem; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.5rem;">
+            Personalized for you
+          </p>
+        </div>
+
+        <!-- All bookmarks -->
+        <div v-if="recommendations.all_folders.length > 0">
+          <h2 style="color: #2C1810; font-size: 3rem; font-weight: 700; margin-bottom: 1.25rem;">
+            Based on your bookmarks
           </h2>
-          <select
-            v-model="selectedCategory"
-            @change="handleCategoryChange"
-            class="border rounded px-3 py-1 text-sm"
-          >
-            <option :value="null">Auto ({{ recommendations.top_category }})</option>
-            <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
-          </select>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            <DishCard v-for="recipe in recommendations.all_folders" :key="recipe.recipe_id"
+              :title="recipe.name" :image="recipe.images" :description="recipe.description"
+              :category="recipe.category" :recipe="recipe" @select="selectRecipe(recipe)" />
+          </div>
         </div>
-        <div v-if="recommendations.category.length > 0"
-          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          <DishCard
-            v-for="recipe in recommendations.category"
-            :key="recipe.recipe_id"
-            :title="recipe.name"
-            :image="recipe.images"
-            :description="recipe.description"
-            :category="recipe.category"
-            :recipe="recipe"
-            @select="selectRecipe(recipe)"
-          />
-        </div>
-      </div>
 
-      <div v-if="recommendations.random.length > 0">
-        <h2 class="text-xl font-bold mb-4">Discover something new</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          <DishCard
-            v-for="recipe in recommendations.random"
-            :key="recipe.recipe_id"
-            :title="recipe.name"
-            :image="recipe.images"
-            :description="recipe.description"
-            :category="recipe.category"
-            :recipe="recipe"
-            @select="selectRecipe(recipe)"
-          />
+        <!-- Category -->
+        <div>
+          <div class="flex items-center gap-4 mb-5">
+            <h2 style="color: #2C1810; font-size: 3rem; font-weight: 700;">
+              {{ selectedCategory || recommendations.top_category || 'Category' }} recipes
+            </h2>
+            <select v-model="selectedCategory" @change="handleCategoryChange"
+              style="border: 1px solid #D4956A; border-radius: 9999px; padding: 0.3rem 1rem; font-size: 0.85rem; color: #5C3317; background: white; cursor: pointer; outline: none;">
+              <option :value="null">Auto ({{ recommendations.top_category }})</option>
+              <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
+            </select>
+          </div>
+          <div v-if="recommendations.category.length > 0"
+            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            <DishCard v-for="recipe in recommendations.category" :key="recipe.recipe_id"
+              :title="recipe.name" :image="recipe.images" :description="recipe.description"
+              :category="recipe.category" :recipe="recipe" @select="selectRecipe(recipe)" />
+          </div>
         </div>
-      </div>
 
+        <!-- Random -->
+        <div v-if="recommendations.random.length > 0">
+          <h2 style="color: #2C1810; font-size: 3rem; font-weight: 700; margin-bottom: 1.25rem;">
+            Discover something new
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            <DishCard v-for="recipe in recommendations.random" :key="recipe.recipe_id"
+              :title="recipe.name" :image="recipe.images" :description="recipe.description"
+              :category="recipe.category" :recipe="recipe" @select="selectRecipe(recipe)" />
+          </div>
+        </div>
+
+      </div>
     </div>
+
+    <!-- Modal -->
+    <RecipeDetail v-if="selectedRecipe" :recipe="selectedRecipe" @close="selectedRecipe = null" />
   </div>
-
-  <!-- Modal -->
-  <RecipeDetail
-    v-if="selectedRecipe"
-    :recipe="selectedRecipe"
-    @close="selectedRecipe = null"
-  />
-
-</div>
 </template>
