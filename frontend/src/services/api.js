@@ -147,3 +147,10 @@ export async function getRecipesByCategory(category) {
   );
   return res.json();
 }
+
+export async function loadRecommendations(category = null) {
+  const url = category
+    ? `${API_URL}/recommendations?category=${encodeURIComponent(category)}`
+    : null;
+  recommendations.value = await getRecommendations(category);
+}
